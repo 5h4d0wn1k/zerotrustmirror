@@ -1,0 +1,47 @@
+"""Weak environment pack — minimal zero-trust posture (YAML fixture)."""
+WEAK_ENV_YAML = """
+org_name: ExampleOrg-Weak
+identity:
+  mfa_enabled: false
+  mfa_coverage_pct: 0
+  privileged_access_management: false
+  identity_provisioning_automated: false
+  sso_enabled: false
+  service_account_rotation_days: 365
+devices:
+  device_compliance_required: false
+  endpoint_posture_attestation: false
+  unmanaged_device_access_allowed: true
+  browser_isolation: false
+  device_inventory_coverage_pct: 10
+network:
+  micro_segmentation: false
+  east_west_policy: false
+  network_visibility_tools: []
+  remote_access_vpn_only: true
+  zero_trust_network_access: false
+apps:
+  app_access_policy: allow-all
+  least_privilege_delivery: false
+  public_app_count: 50
+  internal_app_count: 100
+  externally_reachable_apps: 80
+  api_gateway: false
+data:
+  data_classification_coverage_pct: 0
+  encryption_at_rest: false
+  encryption_in_transit: true
+  dlp_controls: false
+  data_sharing_policy: unrestricted
+automation:
+  automated_policy_enforcement: false
+  soar_platform: false
+  incident_runbooks_automated: 0
+  total_incident_runbooks: 10
+vis:
+  log_aggregation: false
+  siem_present: false
+  behavioral_analytics: false
+  detection_rules_count: 0
+  log_coverage_pct: 5
+"""

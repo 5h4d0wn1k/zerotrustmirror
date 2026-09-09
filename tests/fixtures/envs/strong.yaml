@@ -1,0 +1,50 @@
+"""Strong environment pack — mature zero-trust posture (YAML fixture)."""
+STRONG_ENV_YAML = """
+org_name: ExampleOrg-Strong
+identity:
+  mfa_enabled: true
+  mfa_coverage_pct: 98
+  privileged_access_management: true
+  identity_provisioning_automated: true
+  sso_enabled: true
+  service_account_rotation_days: 30
+devices:
+  device_compliance_required: true
+  endpoint_posture_attestation: true
+  unmanaged_device_access_allowed: false
+  browser_isolation: true
+  device_inventory_coverage_pct: 95
+network:
+  micro_segmentation: true
+  east_west_policy: true
+  network_visibility_tools:
+    - nids
+    - east-west-monitor
+    - dns-logs
+  remote_access_vpn_only: false
+  zero_trust_network_access: true
+apps:
+  app_access_policy: least-privilege
+  least_privilege_delivery: true
+  public_app_count: 50
+  internal_app_count: 100
+  externally_reachable_apps: 10
+  api_gateway: true
+data:
+  data_classification_coverage_pct: 92
+  encryption_at_rest: true
+  encryption_in_transit: true
+  dlp_controls: true
+  data_sharing_policy: need-to-know
+automation:
+  automated_policy_enforcement: true
+  soar_platform: true
+  incident_runbooks_automated: 9
+  total_incident_runbooks: 10
+vis:
+  log_aggregation: true
+  siem_present: true
+  behavioral_analytics: true
+  detection_rules_count: 250
+  log_coverage_pct: 95
+"""
