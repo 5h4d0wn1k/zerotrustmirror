@@ -1,4 +1,5 @@
 # zerotrustmirror
+![tests](https://github.com/5h4d0wn1k/zerotrustmirror/actions/workflows/ci.yml/badge.svg) ![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
 Zero-trust readiness + correlation engine — ZTA pillars scoring with evidence, web/net/host multichannel correlation, metrics
 
@@ -146,3 +147,6 @@ Fixture packs under `tests/fixtures/envs/`:
 | py_compile | All modules compile cleanly |
 | Demo exit code | 0 |
 | Token literal scan | Clean — no AKIA/xoxb/ghp_/sk_live/eyJ patterns |
+
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md).
