@@ -9,3 +9,6 @@ dist/
 *.egg-info/
 .venv/
 .env
+
+# generated demo output
+demo_output/
