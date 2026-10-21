@@ -84,3 +84,49 @@ class TestParity(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestRunbookContradictoryCounts(unittest.TestCase):
+    """automated > total is contradictory and must not pass (#6)."""
+
+    def _fields(self, result):
+        return {e.field: e for e in result.evidences}
+
+    def test_zero_total_with_automated_fails(self):
+        cfg = {"automation": {"automated_policy_enforcement": False,
+                              "soar_platform": False,
+                              "incident_runbooks_automated": 3,
+                              "total_incident_runbooks": 0}}
+        result = automation.evaluate(cfg)
+        rb = self._fields(result)["automation.incident_runbooks_automated"]
+        self.assertFalse(rb.present)
+        self.assertEqual(rb.contribution, 0)
+        self.assertIn("contradictory", rb.detail)
+        self.assertEqual(result.score, 0)
+
+    def test_automated_exceeds_total_fails(self):
+        cfg = {"automation": {"automated_policy_enforcement": False,
+                              "soar_platform": False,
+                              "incident_runbooks_automated": 5,
+                              "total_incident_runbooks": 4}}
+        result = automation.evaluate(cfg)
+        rb = self._fields(result)["automation.incident_runbooks_automated"]
+        self.assertFalse(rb.present)
+        self.assertEqual(rb.contribution, 0)
+        self.assertEqual(result.score, 0)
+
+    def test_zero_zero_still_fails_cleanly(self):
+        cfg = {"automation": {"incident_runbooks_automated": 0,
+                              "total_incident_runbooks": 0}}
+        result = automation.evaluate(cfg)
+        rb = self._fields(result)["automation.incident_runbooks_automated"]
+        self.assertFalse(rb.present)
+        self.assertEqual(rb.contribution, 0)
+
+    def test_valid_counts_still_scored(self):
+        cfg = {"automation": {"incident_runbooks_automated": 7,
+                              "total_incident_runbooks": 10}}
+        result = automation.evaluate(cfg)
+        rb = self._fields(result)["automation.incident_runbooks_automated"]
+        self.assertTrue(rb.present)
+        self.assertEqual(rb.contribution, 25)
