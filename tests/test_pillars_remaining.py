@@ -5,6 +5,32 @@ from tests.fixtures.envs.weak import WEAK_ENV
 from tests.fixtures.envs.strong import STRONG_ENV
 
 
+class TestAppsMissingInventory(unittest.TestCase):
+    """Absent app-inventory counts must not earn exposure credit (#17)."""
+
+    def test_absent_counts_get_no_exposure_credit(self):
+        result = apps.evaluate({"apps": {"api_gateway": True}})
+        fields = {e.field: e for e in result.evidences}
+        exposure = fields["apps.externally_reachable_apps"]
+        self.assertFalse(exposure.present)
+        self.assertEqual(exposure.contribution, 0)
+        self.assertIn("unknown", exposure.detail)
+        self.assertEqual(result.score, 15)  # only the api_gateway evidence
+
+    def test_no_apps_section_gets_no_exposure_credit(self):
+        result = apps.evaluate({})
+        fields = {e.field: e for e in result.evidences}
+        self.assertEqual(fields["apps.externally_reachable_apps"].contribution, 0)
+        self.assertEqual(result.score, 0)
+
+    def test_present_counts_still_scored(self):
+        result = apps.evaluate(STRONG_ENV)
+        fields = {e.field: e for e in result.evidences}
+        exposure = fields["apps.externally_reachable_apps"]
+        self.assertTrue(exposure.present)
+        self.assertEqual(exposure.contribution, 25)
+
+
 class TestAppsWeak(unittest.TestCase):
     def test_weak_apps_low(self):
         result = apps.evaluate(WEAK_ENV)

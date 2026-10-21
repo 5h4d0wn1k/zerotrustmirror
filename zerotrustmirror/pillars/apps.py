@@ -21,11 +21,17 @@ def evaluate(cfg: dict) -> PillarResult:
     pub = apps.get("public_app_count", 0)
     internal = apps.get("internal_app_count", 0)
     reachable = apps.get("externally_reachable_apps", 0)
-    total = pub + internal if (pub + internal) > 0 else 1
-    exposure_ratio = reachable / total
-    exposure_ok = exposure_ratio <= 0.15
-    evidences.append(Evidence("apps.externally_reachable_apps", exposure_ok, f"Exposure: {reachable}/{total} ({exposure_ratio:.0%})", 25 if exposure_ok else (10 if exposure_ratio <= 0.30 else 0)))
-    score += 25 if exposure_ok else (10 if exposure_ratio <= 0.30 else 0)
+    if pub + internal <= 0:
+        evidences.append(Evidence("apps.externally_reachable_apps", False,
+                                   "Exposure: unknown (no app inventory supplied)", 0))
+    else:
+        total = pub + internal
+        exposure_ratio = reachable / total
+        exposure_ok = exposure_ratio <= 0.15
+        evidences.append(Evidence("apps.externally_reachable_apps", exposure_ok,
+                                  f"Exposure: {reachable}/{total} ({exposure_ratio:.0%})",
+                                  25 if exposure_ok else (10 if exposure_ratio <= 0.30 else 0)))
+        score += 25 if exposure_ok else (10 if exposure_ratio <= 0.30 else 0)
 
     gw = apps.get("api_gateway", False)
     evidences.append(Evidence("apps.api_gateway", gw, f"API gateway: {gw}", 15 if gw else 0))
