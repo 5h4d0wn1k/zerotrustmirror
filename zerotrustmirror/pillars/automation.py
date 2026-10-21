@@ -19,10 +19,17 @@ def evaluate(cfg: dict) -> PillarResult:
 
     auto_rb = auto.get("incident_runbooks_automated", 0)
     total_rb = auto.get("total_incident_runbooks", 1)
-    rb_ratio = auto_rb / max(total_rb, 1)
-    rb_ok = rb_ratio >= 0.70
-    evidences.append(Evidence("automation.incident_runbooks_automated", rb_ok, f"Runbooks automated: {auto_rb}/{total_rb} ({rb_ratio:.0%})", 25 if rb_ok else (10 if rb_ratio > 0 else 0)))
-    score += 25 if rb_ok else (10 if rb_ratio > 0 else 0)
+    if auto_rb < 0 or total_rb < 0 or auto_rb > total_rb:
+        evidences.append(Evidence("automation.incident_runbooks_automated", False,
+                                  f"Runbooks automated: {auto_rb}/{total_rb} "
+                                  "(contradictory counts - automated exceeds total)", 0))
+    else:
+        rb_ratio = auto_rb / max(total_rb, 1)
+        rb_ok = rb_ratio >= 0.70
+        evidences.append(Evidence("automation.incident_runbooks_automated", rb_ok,
+                                  f"Runbooks automated: {auto_rb}/{total_rb} ({rb_ratio:.0%})",
+                                  25 if rb_ok else (10 if rb_ratio > 0 else 0)))
+        score += 25 if rb_ok else (10 if rb_ratio > 0 else 0)
 
     if enforcement and soar:
         score += 15
